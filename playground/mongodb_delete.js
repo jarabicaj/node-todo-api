@@ -1,4 +1,4 @@
-const {MongoClient} = require ('mongodb');
+const {MongoClient, ObjectID} = require ('mongodb');
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
     if (err) {
@@ -21,6 +21,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
     // db.collection('Todos').findOneAndDelete({completed: false}).then((result) => {
     //     console.log(result);
     // });
+
+    // db.collection('Users').deleteMany({name: 'Jozef'}).then((res) => {
+    //     console.log(res.result);
+    // });
+
+    db.collection('Users').findOneAndDelete({_id: new ObjectID('5b5b7233dcea5864ec450874')}).then((res) => {
+        console.log(res);
+    });
 
 
     client.close()
