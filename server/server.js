@@ -22,6 +22,14 @@ app.post('/todos', (req, res) => {
    });
 });
 
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({todos});
+    }, (err) => {
+        res.send(err)
+    })
+});
+
 app.post('/users', (req, res) => {
     var user = new User({
         email: req.body.email
@@ -37,3 +45,5 @@ app.post('/users', (req, res) => {
 app.listen(3000, () => {
     console.log('Server is running on 3000')
 });
+
+module.exports = {app};
