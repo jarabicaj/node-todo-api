@@ -1,0 +1,23 @@
+const {ObjectID} = require('mongodb');
+
+const {mongoose} = require('./../server/db/mongoose');
+const {Todo} = require('./../server/models/todo');
+const {User} = require('./../server/models/user')
+
+//Todo.remove({}) // nevraca doc
+//Todo.findOneAndRemove // vraca doc
+//Todo.findByIdAndRemove // vraca doc
+
+Todo.remove({}).then((result) => { //nevracaju doc
+    console.log(result.result);
+});
+
+Todo.findOneAndRemove({_id: '5b5cee43a11dee1449a4b70e'}).then((todo) => {
+    console.log(todo)
+});
+
+Todo.findByIdAndRemove('5b5cecfba11dee1449a4b6d0').then((todo) => {
+    console.log(todo);
+});
+
+
