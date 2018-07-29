@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser'); // take JSON and convert it into an object
-var {ObjectID} = require('mongodb');
+const _ = require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser'); // take JSON and convert it into an object
+const {ObjectID} = require('mongodb');
 
 var {mongoose} = require ('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -64,6 +65,66 @@ app.delete('/todos/:id', (req, res) => {
     }).catch((err) => {
         res.status(400).send();
     })
+});
+
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send(`Id ${id} is invalid!`);
+    }
+
+    if(_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completedAt = null;
+        body.completed = false;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+        if (!todo) {
+            return res.status(404).send()
+        };
+
+        res.send({todo});
+
+    }).catch((e) => {
+        res.status(400).send()
+    });
+
+
+    // if(_.isBoolean(body.completed) && body.completed) {
+    //     body.completedAt = new Date().getTime();
+    //
+    //     Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    //         if (!todo) {
+    //             return res.status(404).send()
+    //         };
+    //
+    //         res.send({todo});
+    //
+    //     }).catch((e) => {
+    //         res.status(400).send()
+    //     });
+    //
+    // } else {
+    //     body.completedAt = null;
+    //     body.completed = false;
+    //     Todo.findById(id).then((todo) => {
+    //         if (!todo) {
+    //             return res.status(404).send()
+    //         };
+    //
+    //         res.send({todo});
+    //     }).catch ((e) => {
+    //         res.status(400).send()
+    //     });
+    // }
+
+
+
+
 });
 
 app.listen(port, () => {
