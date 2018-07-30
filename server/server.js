@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser'); // take JSON and convert it into an object
 const {ObjectID} = require('mongodb');
 
+
 var {mongoose} = require ('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -122,6 +123,29 @@ app.patch('/todos/:id', (req, res) => {
     //     });
     // }
 });
+
+app.post('/users', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+
+    user.save().then((user) => {
+        res.send(user)
+    }, (err) => {
+        res.status(400).send(err);
+    })
+
+});
+
+
+app.get('/users', (req, res) => {
+    User.find().then((users) => {
+        res.send({users});
+    }, (err) => {
+        res.send(err)
+    })
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on ${port}`);
