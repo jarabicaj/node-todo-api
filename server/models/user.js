@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 // {
 //     email: 'jarabica@example.com',
 //     password: 'adsfsadfasdfasdfsadf',
@@ -86,6 +87,25 @@ UserSchema.statics.findByToken = function (token) {
         'tokens.token': token
     });
 };
+
+UserSchema.pre('save', function (next) { //mongoose middleware, that runs before the event, in this case save
+    var user = this; //individual document
+
+    if(user.isModified('password')) { // it runs in case a password id modified
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            })
+        })
+
+    } else {
+        next()
+    }
+
+
+});
 
 var User = mongoose.model('User', UserSchema);
 
