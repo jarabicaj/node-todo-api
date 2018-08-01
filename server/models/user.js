@@ -55,7 +55,7 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.methods.generateAuthToken = function () {
-    var user = this;
+    var user = this; // this poukazuje na daný dokument
     var access = 'auth';
     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
 
@@ -63,6 +63,27 @@ UserSchema.methods.generateAuthToken = function () {
     user.tokens = user.tokens.concat([{access, token}]);
     return user.save().then(() => {
         return token;
+    });
+
+};
+
+UserSchema.statics.findByToken = function (token) {
+    var User = this; // this poukazuje na model
+    var decoded;
+
+    try {
+        decoded = jwt.verify(token, 'abc123')
+    } catch (e) {
+        // return new Promise((resolve, reject) => {
+        //     reject()
+        // });
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        _id: decoded._id,
+        'tokens.access': 'auth',
+        'tokens.token': token
     });
 };
 
