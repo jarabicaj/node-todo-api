@@ -66,7 +66,18 @@ UserSchema.methods.generateAuthToken = function () {
         return token;
     });
 
+
 };
+
+// var genAuthToken = (user) => {
+//     var access = 'auth';
+//     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+//
+//     user.tokens = user.tokens.concat([{access, token}]);
+//     return user.save().then(() => {
+//         return token;
+//     })
+// };
 
 UserSchema.statics.findByToken = function (token) {
     var User = this; // this poukazuje na model
@@ -99,12 +110,9 @@ UserSchema.pre('save', function (next) { //mongoose middleware, that runs before
                 next();
             })
         })
-
     } else {
         next()
     }
-
-
 });
 
 var User = mongoose.model('User', UserSchema);

@@ -107,9 +107,8 @@ app.post('/users', (req, res) => {
     }).then((token) => {
         res.header('x-auth', token).send(newUser);
     }).catch((e) => {
-        res.status(404).send(e);
-    })
-
+        res.status(400).send(e);
+    });
 });
 
 app.get('/users', (req, res) => {
