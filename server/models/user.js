@@ -69,6 +69,15 @@ UserSchema.methods.generateAuthToken = function () {
 
 };
 
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {token}}
+    })
+};
+
 // var genAuthToken = (user) => {
 //     var access = 'auth';
 //     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
