@@ -96,6 +96,14 @@ app.patch('/todos/:id', (req, res) => {
     });
 });
 
+app.get('/users', (req, res) => {
+    User.find().then((allUsers) => {
+        res.send({allUsers})
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
+
 app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email','password']);
 
@@ -126,14 +134,6 @@ app.post('/users/login', (req, res) => {
 
 
 
-});
-
-app.get('/users', (req, res) => {
-    User.find().then((allUsers) => {
-        res.send({allUsers})
-    }).catch((e) => {
-        res.status(400).send(e);
-    })
 });
 
 app.get('/users/me', authenticate, (req, res) => {
